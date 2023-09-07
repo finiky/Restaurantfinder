@@ -1,17 +1,13 @@
 require("dotenv").config();
 const express = require("express");
+const restaurantsRouter = require("./restaurants.router");
 const app = express();
 
-app.get("/restaurants", async(request, response) => {
-  try {
-    console.log("Retrive the restaurants");
-  } catch(error) {
-    next(error);
-  }
-});
+//to convert and attach body from the client to the request object
+app.use(express.json());
 
-
-
+//restaurants route handler
+app.use("/api", restaurantsRouter);
 
 //start the server
 const port = process.env.PORT || 5000;
