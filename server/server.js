@@ -1,9 +1,11 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const restaurantsRouter = require("./restaurants.router");
 const app = express();
 
 //to convert and attach body from the client to the request object
+app.use(cors());
 app.use(express.json());
 
 //restaurants route handler
