@@ -63,12 +63,13 @@ router.delete("/restaurants/:id", async (request, response) => {
   try {
     const { id } = request.params;
     await db.query("DELETE FROM restaurants WHERE id = $1", [id]);
-    const result = await db.query("SELECT * FROM restaurants WHERE id = $1", [
-      id,
-    ]);
-    if (result.rows.length === 0) {
-      response.status(204);
+    const result = await db.query("SELECT * FROM restaurants");
+    for (let x of result.rows) {
+      if (x.id === id) {
+        return response.status(400).json({ message: "Delete Unsuccessful" });
+      }
     }
+    response.status(204).json({ message: "Delete Successful" });
   } catch (error) {
     next(error);
   }
