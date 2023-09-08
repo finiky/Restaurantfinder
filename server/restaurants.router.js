@@ -47,6 +47,19 @@ router.put("/restaurants/:id", async (request, response, next) => {
     next(error);
   }
 });
-router.delete("/restaurants/:id");
+router.delete("/restaurants/:id", async (request, response) => {
+  try {
+    const { id } = request.params;
+    await db.query("DELETE FROM restaurants WHERE id = $1", [id]);
+    const result = await db.query("SELECT * FROM restaurants WHERE id = $1", [
+      id,
+    ]);
+    if (result.rows.length === 0) {
+      response.status(204);
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;
