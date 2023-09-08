@@ -1,7 +1,20 @@
-const RestaurantList = () => {
+import { useContext, useEffect } from "react";
+import { RestaurantContext } from "./contextApi/RestaurantsContext";
+const RestaurantList = (props) => {
+  const { restaurants, setRestaurants } = useContext(RestaurantContext);
+  useEffect(() => {
+    try {
+      const fetchData = async () => {
+        let data = await fetch("http://localhost:5000/api/restaurants");
+        data = await data.json();
+        setRestaurants(data.data);
+      };
+      fetchData();
+    } catch (error) {}
+  }, []);
   return (
     <div className="list-group">
-      <table class="table table-dark table-hover">
+      <table className="table table-dark table-hover">
         <thead>
           <tr>
             <th scope="col">Restaurant</th>
@@ -13,30 +26,20 @@ const RestaurantList = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Wendys</td>
-            <td>Otto</td>
-            <td>$$</td>
-            <td>Rating</td>
-            <td>
-              <button className="btn btn-warning">Edit</button>
-            </td>
-            <td>
-              <button className="btn btn-danger">Delete</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>$$$</td>
-            <td>Rating</td>
-            <td>
-              <button className="btn btn-warning">Edit</button>
-            </td>
-            <td>
-              <button className="btn btn-danger">Delete</button>
-            </td>
-          </tr>
+          {restaurants && restaurants.map((restaurant) => (
+            <tr key={restaurant.id}>
+              <td>{restaurant.name}</td>
+              <td>{restaurant.location}</td>
+              <td>{"$".repeat(restaurant.price_range)}</td>
+              <td>reviews</td>
+              <td>
+                <button className="btn btn-warning">Edit</button>
+              </td>
+              <td>
+                <button className="btn btn-danger">Delete</button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
