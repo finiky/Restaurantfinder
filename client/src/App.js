@@ -2,10 +2,12 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./routes/Home";
 import UpdateRestaurant from "./routes/UpdateRestaurant";
 import RestaurantDetail from "./routes/RestaurantDetail";
+import { RestaurantContextProvider } from "./contextApi/RestaurantsContext";
 const App = () => {
   return (
-    <div>
-      <Routes>
+    <RestaurantContextProvider>
+      <div className="container">
+        <Routes>
           <Route exact path="/" element={<Home />} />
           <Route
             exact
@@ -13,8 +15,9 @@ const App = () => {
             element={<UpdateRestaurant />}
           />
           <Route exact path="/restaurants/:id" element={<RestaurantDetail />} />
-      </Routes>
-    </div>
+        </Routes>
+      </div>
+    </RestaurantContextProvider>
   );
 };
 
