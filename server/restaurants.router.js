@@ -11,7 +11,7 @@ router.get("/restaurants", async (request, response, next) => {
     next(error);
   }
 });
-router.get("/restaurants/:id", async (request, response) => {
+router.get("/restaurants/:id", async (request, response, next) => {
   try {
     const { id } = request.params;
     const result = await db.query("SELECT * FROM restaurants WHERE id = $1", [
@@ -22,7 +22,7 @@ router.get("/restaurants/:id", async (request, response) => {
     next(error);
   }
 });
-router.post("/restaurants", async (request, response) => {
+router.post("/restaurants", async (request, response, next) => {
   try {
     const { name, location, price_range } = request.body;
     const result = await db.query(
@@ -34,9 +34,18 @@ router.post("/restaurants", async (request, response) => {
     next(error);
   }
 });
-router.put("/restaurants/:id", async (request, response) => {
-  const {name, location, price_range} = request.body;
-  const id = request.params;
+router.put("/restaurants/:id", async (request, response, next) => {
+  try {
+    const { name, location, price_range } = request.body;
+    const { id } = request.params;
+    const result = await db.query(
+      "UPDATE restaurants SET name = $1, location = $2, price_range = $3 WHERE id = $4 RETURNING *",
+      [name, location, price_range, id]
+    );
+    response.status(200).json({ data: result.rows });
+  } catch (error) {
+    next(error);
+  }
 });
 router.delete("/restaurants/:id");
 
