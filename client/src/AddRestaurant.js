@@ -1,11 +1,25 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { RestaurantContext } from "./contextApi/RestaurantsContext";
 const AddRestaurant = () => {
+  const { addRestaurant } = useContext(RestaurantContext);
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
-  const [priceRange, setPriceRange] = useState("");
+  const [price_range, setPriceRange] = useState("Price Range");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let response = await fetch("http://localhost:5000/api/restaurants", {
+      method: "POST",
+      headers: {
+        "CONTENT-TYPE": "application/json",
+      },
+      body: JSON.stringify({ name, location, price_range }),
+    });
+    response = await response.json();
+    addRestaurant(response.data);
+  };
   return (
     <div className="nb-4">
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="form-row">
           <div className="col">
             <input
@@ -28,7 +42,7 @@ const AddRestaurant = () => {
           <div className="col">
             <select
               className="custom-select my-1 mr-sm-2"
-              value={priceRange}
+              value={price_range}
               onChange={(e) => setPriceRange(e.target.value)}
             >
               <option disabled>Price Range</option>
@@ -39,7 +53,9 @@ const AddRestaurant = () => {
               <option value="5">$$$$$</option>
             </select>
           </div>
-          <button className="btn btn-primary">Add</button>
+          <button type="submit" className="btn btn-primary">
+            Add
+          </button>
         </div>
       </form>
     </div>
