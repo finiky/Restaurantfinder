@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const db = require("./db/index");
+
+// Implementing only happy paths
+
+// GET all restaurants
 router.get("/restaurants", async (request, response, next) => {
   try {
     const result = await db.query("SELECT * FROM restaurants");
@@ -11,6 +15,8 @@ router.get("/restaurants", async (request, response, next) => {
     next(error);
   }
 });
+
+// GET a single restaurant
 router.get("/restaurants/:id", async (request, response, next) => {
   try {
     const { id } = request.params;
@@ -22,6 +28,8 @@ router.get("/restaurants/:id", async (request, response, next) => {
     next(error);
   }
 });
+
+// CREATE a new restaurant
 router.post("/restaurants", async (request, response, next) => {
   try {
     const { name, location, price_range } = request.body;
@@ -34,6 +42,8 @@ router.post("/restaurants", async (request, response, next) => {
     next(error);
   }
 });
+
+// Update a restaurant
 router.put("/restaurants/:id", async (request, response, next) => {
   try {
     const { name, location, price_range } = request.body;
@@ -47,6 +57,8 @@ router.put("/restaurants/:id", async (request, response, next) => {
     next(error);
   }
 });
+
+// DELETE a restaurant
 router.delete("/restaurants/:id", async (request, response) => {
   try {
     const { id } = request.params;
