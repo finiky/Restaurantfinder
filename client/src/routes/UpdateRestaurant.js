@@ -1,10 +1,11 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 const UpdateRestaurant = () => {
   const { id } = useParams();
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [price_range, setPriceRange] = useState("");
+  const navigate = useNavigate();
   useEffect(() => {
     const getRestaurant = async () => {
       const response = await fetch(
@@ -17,7 +18,7 @@ const UpdateRestaurant = () => {
     };
     getRestaurant();
   }, [id]);
-  const handleSubmit = async (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
     const response = await fetch(
       `http://localhost:5000/api/restaurants/${id}`,
@@ -29,12 +30,15 @@ const UpdateRestaurant = () => {
         body: JSON.stringify({ name, location, price_range }),
       }
     );
+    if (response.ok) {
+      navigate("/"); // causes a re-render so useEffect will take place jsut like on  mount
+    }
   };
   return (
     <div>
       <h1 className="text-center">Update Restaurant</h1>
       <div>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleUpdate}>
           <div className="form-group">
             <label htmlFor="name">Name</label>
             <input

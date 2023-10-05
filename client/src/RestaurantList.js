@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RestaurantContext } from "./contextApi/RestaurantsContext";
-const RestaurantList = (props) => {
+const RestaurantList = () => {
   const { restaurants, setRestaurants } = useContext(RestaurantContext);
   const navigate = useNavigate();
   useEffect(() => {
@@ -14,7 +14,8 @@ const RestaurantList = (props) => {
       fetchData();
     } catch (error) {}
   }, []);
-  const handleDelete = async (restaurantId) => {
+  const handleDelete = async (e, restaurantId) => {
+    e.stopPropagation();
     try {
       const response = await fetch(
         `http://localhost:5000/api/restaurants/${restaurantId}`,
@@ -32,12 +33,19 @@ const RestaurantList = (props) => {
       console.log(error);
     }
   };
-  const handleUpdate = async (restaurantId) => {
+  const handleUpdate = async (e, restaurantId) => {
+    e.stopPropagation();
     try {
       navigate(`/restaurants/${restaurantId}/update`);
     } catch (error) {
       console.log(error);
     }
+  };
+  const handleView = async (e, restaurantId) => {
+    e.stopPropagation();
+    try {
+      navigate(`restaurants/${restaurantId}`);
+    } catch (error) {}
   };
   return (
     <div className="list-group">
@@ -55,7 +63,12 @@ const RestaurantList = (props) => {
         <tbody>
           {restaurants &&
             restaurants.map((restaurant) => (
-              <tr key={restaurant.id}>
+              <tr
+                key={restaurant.id}
+                onClick={(e) => {
+                  handleView(e, restaurant.id);
+                }}
+              >
                 <td>{restaurant.name}</td>
                 <td>{restaurant.location}</td>
                 <td>{"$".repeat(restaurant.price_range)}</td>
@@ -63,8 +76,8 @@ const RestaurantList = (props) => {
                 <td>
                   <button
                     className="btn btn-warning"
-                    onClick={() => {
-                      handleUpdate(restaurant.id);
+                    onClick={(e) => {
+                      handleUpdate(e, restaurant.id);
                     }}
                   >
                     Edit
@@ -73,7 +86,7 @@ const RestaurantList = (props) => {
                 <td>
                   <button
                     className="btn btn-danger"
-                    onClick={() => handleDelete(restaurant.id)}
+                    onClick={(e) => handleDelete(e, restaurant.id)}
                   >
                     Delete
                   </button>

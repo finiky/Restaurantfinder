@@ -7,7 +7,9 @@ const db = require("./db/index");
 // GET all restaurants
 router.get("/restaurants", async (request, response, next) => {
   try {
-    const result = await db.query("SELECT * FROM restaurants");
+    const result = await db.query(
+      "SELECT * FROM restaurants ORDER BY name ASC"
+    );
     response
       .status(200)
       .json({ entries: result.rows.length, data: result.rows });
@@ -23,7 +25,7 @@ router.get("/restaurants/:id", async (request, response, next) => {
     const result = await db.query("SELECT * FROM restaurants WHERE id = $1", [
       id,
     ]);
-    response.status(200).json({ data: result.rows });
+    response.status(200).json({ data: result.rows[0] });
   } catch (error) {
     next(error);
   }
@@ -37,7 +39,7 @@ router.post("/restaurants", async (request, response, next) => {
       "INSERT INTO restaurants (name, location, price_range) VALUES ($1, $2, $3) RETURNING *",
       [name, location, price_range]
     );
-    response.status(201).json({ data: result.rows });
+    response.status(201).json({ data: result.rows[0] });
   } catch (error) {
     next(error);
   }
@@ -52,7 +54,7 @@ router.put("/restaurants/:id", async (request, response, next) => {
       "UPDATE restaurants SET name = $1, location = $2, price_range = $3 WHERE id = $4 RETURNING *",
       [name, location, price_range, id]
     );
-    response.status(200).json({ data: result.rows });
+    response.status(200).json({ data: result.rows[0] });
   } catch (error) {
     next(error);
   }
